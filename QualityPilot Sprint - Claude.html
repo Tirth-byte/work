@@ -1750,34 +1750,54 @@ NEXT_PUBLIC_API_URL=         <span class="cm"># frontend: URL of Hono API</span>
   <div class="float-label">of 28 tasks done</div>
 </div>
 
-<script>
-  let total = 0;
-  let done = 0;
-  const counts = { backend: { done: 0, total: 0 }, frontend: { done: 0, total: 0 }, shared: { done: 0, total: 0 } };
-  const STORAGE_KEY = 'qp_sprint_state';
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-  // Load state
-  function loadState() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : {};
-    } catch { return {}; }
+  // ── Firebase config (free Realtime Database) ──────────────────────────────
+  // This is a PUBLIC read/write DB for this sprint board — safe for internal team use.
+  const firebaseConfig = {
+    apiKey: "AIzaSyC_PLACEHOLDER_REPLACE_ME",
+    authDomain: "qualitypilot-sprint.firebaseapp.com",
+    databaseURL: "https://qualitypilot-sprint-default-rtdb.firebaseio.com",
+    projectId: "qualitypilot-sprint",
+    storageBucket: "qualitypilot-sprint.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "1:000000000000:web:0000000000000000"
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  const TASKS_REF = ref(db, 'sprint/v1/tasks');
+
+  // ── Status indicator ─────────────────────────────────────────────────────
+  const statusDot = document.createElement('div');
+  statusDot.style.cssText = 'position:fixed;top:14px;right:18px;z-index:999;display:flex;align-items:center;gap:6px;font-family:monospace;font-size:10px;color:#6A7499;';
+  statusDot.innerHTML = '<span id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:#3A4268;display:inline-block;transition:background 0.3s"></span><span id="sync-label">connecting…</span>';
+  document.body.appendChild(statusDot);
+
+  function setSyncStatus(status) {
+    const dot   = document.getElementById('sync-dot');
+    const label = document.getElementById('sync-label');
+    if (!dot || !label) return;
+    if (status === 'live')    { dot.style.background = '#00E5A0'; label.textContent = 'live'; }
+    if (status === 'saving')  { dot.style.background = '#FFB830'; label.textContent = 'saving…'; }
+    if (status === 'error')   { dot.style.background = '#FF5555'; label.textContent = 'offline'; }
   }
 
-  function saveState(state) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
-  }
-
+  // ── Recalc progress bars ──────────────────────────────────────────────────
   function recalc() {
     const tasks = document.querySelectorAll('.task');
-    total = tasks.length;
-    done = document.querySelectorAll('.task.done').length;
+    const total = tasks.length;
+    const done  = document.querySelectorAll('.task.done').length;
 
     ['backend','frontend','shared'].forEach(sec => {
       const secTasks = document.querySelectorAll(`.task[data-section="${sec}"]`);
-      const secDone = document.querySelectorAll(`.task[data-section="${sec}"].done`);
+      const secDone  = document.querySelectorAll(`.task[data-section="${sec}"].done`);
       const el = document.getElementById(`cnt-${sec}`);
-      if(el) el.textContent = `${secDone.length} / ${secTasks.length}`;
+      if (el) el.textContent = `${secDone.length} / ${secTasks.length}`;
     });
 
     const pct = total ? Math.round((done / total) * 100) : 0;
@@ -1787,37 +1807,62 @@ NEXT_PUBLIC_API_URL=         <span class="cm"># frontend: URL of Hono API</span>
     document.getElementById('float-done').textContent = done;
   }
 
-  function toggle(checkEl) {
-    const task = checkEl.closest('.task');
-    const id = task.querySelector('.task-num').textContent;
-    const state = loadState();
-    const isDone = task.classList.toggle('done');
-    checkEl.classList.toggle('checked', isDone);
-    state[id] = isDone;
-    saveState(state);
+  // ── Apply a full state snapshot to the DOM ────────────────────────────────
+  function applyState(state) {
+    document.querySelectorAll('.task').forEach(task => {
+      const id    = task.querySelector('.task-num').textContent.trim();
+      const isDone = state && state[id] === true;
+      task.classList.toggle('done', isDone);
+      task.querySelector('.task-check').classList.toggle('checked', isDone);
+    });
     recalc();
   }
 
-  function expand(btn) {
-    const task = btn.closest('.task');
+  // ── Real-time listener — fires for every change by anyone ─────────────────
+  onValue(TASKS_REF,
+    (snapshot) => {
+      setSyncStatus('live');
+      applyState(snapshot.val() || {});
+    },
+    (error) => {
+      console.error('Firebase error:', error);
+      setSyncStatus('error');
+    }
+  );
+
+  // ── Toggle handler — writes to Firebase ──────────────────────────────────
+  window.toggle = function(checkEl) {
+    const task   = checkEl.closest('.task');
+    const id     = task.querySelector('.task-num').textContent.trim();
+    const isDone = !task.classList.contains('done');
+
+    // Optimistic UI update
+    task.classList.toggle('done', isDone);
+    checkEl.classList.toggle('checked', isDone);
+    recalc();
+
+    // Persist to Firebase (syncs to all other users)
+    setSyncStatus('saving');
+    set(ref(db, `sprint/v1/tasks/${id}`), isDone)
+      .then(() => setSyncStatus('live'))
+      .catch(err => {
+        console.error('Save failed:', err);
+        setSyncStatus('error');
+        // Revert optimistic update on failure
+        task.classList.toggle('done', !isDone);
+        checkEl.classList.toggle('checked', !isDone);
+        recalc();
+      });
+  };
+
+  // ── Expand/collapse (local only — no need to share) ───────────────────────
+  window.expand = function(btn) {
+    const task   = btn.closest('.task');
     const detail = task.querySelector('.task-detail');
     const isOpen = detail.classList.toggle('open');
     btn.classList.toggle('open', isOpen);
     btn.textContent = isOpen ? '▲' : '▼';
-  }
-
-  // Restore state on load
-  window.addEventListener('DOMContentLoaded', () => {
-    const state = loadState();
-    document.querySelectorAll('.task').forEach(task => {
-      const id = task.querySelector('.task-num').textContent;
-      if(state[id]) {
-        task.classList.add('done');
-        task.querySelector('.task-check').classList.add('checked');
-      }
-    });
-    recalc();
-  });
+  };
 </script>
 
 </body>
