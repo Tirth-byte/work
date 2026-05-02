@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QualityPilot · Day 1 Sprint Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080A0F;
+    --bg2: #0D1018;
+    --surface: #111520;
+    --surface2: #161C2E;
+    --border: #1E2540;
+    --border2: #252D47;
+    --green: #00E5A0;
+    --green2: #00C487;
+    --green-dim: #001F15;
+    --blue: #3D8EFF;
+    --blue-dim: #071530;
+    --purple: #A78BFA;
+    --purple-dim: #160F2E;
+    --amber: #FFB830;
+    --amber-dim: #1F1500;
+    --red: #FF5555;
+    --text: #D8E0F5;
+    --text2: #6A7499;
+    --text3: #3A4268;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── HEADER ─────────────────────────────────── */
+  .header {
+    background: linear-gradient(180deg, #0A0D18 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 24px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    backdrop-filter: blur(20px);
+  }
+  .header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--green);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-shadow: 0 0 24px rgba(0,229,160,0.35);
+  }
+  .logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--green); }
+  .header-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 8px;
+  }
+  .header-sub b { color: var(--amber); }
+
+  /* progress bar */
+  .progress-wrap { margin-top: 16px; }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text2); margin-bottom: 6px;
+  }
+  .progress-label span { color: var(--green); font-weight: 700; }
+  .progress-track {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── MAIN CONTENT ────────────────────────────── */
+  .main { max-width: 1000px; margin: 0 auto; padding: 28px 24px; }
+
+  /* ── OWNER LEGEND ────────────────────────────── */
+  .legend {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: var(--mono); font-size: 11px;
+  }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── SECTION ─────────────────────────────────── */
+  .section { margin-bottom: 36px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .section-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.06;
+    background: currentColor;
+  }
+  .sh-icon { font-size: 18px; }
+  .sh-title { font-size: 15px; font-weight: 700; }
+  .sh-count {
+    margin-left: auto;
+    font-family: var(--mono); font-size: 11px;
+    background: rgba(255,255,255,0.07);
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  .section-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+  }
+
+  /* ── TASK CARD ───────────────────────────────── */
+  .task {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: background 0.15s;
+  }
+  .task:last-child { border-bottom: none; }
+  .task:nth-child(even) { background: var(--bg2); }
+  .task.done { opacity: 0.45; }
+  .task.done .task-title { text-decoration: line-through; }
+
+  .task-top {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 18px 10px;
+    cursor: pointer;
+  }
+  .task-check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: transparent;
+  }
+  .task-check.checked {
+    background: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(0,229,160,0.4);
+  }
+  .task-check.checked::after { content: '✓'; font-size: 11px; color: #000; font-weight: 700; }
+
+  .task-main { flex: 1; min-width: 0; }
+  .task-title-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .task-num {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text3); flex-shrink: 0;
+  }
+  .task-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+
+  .task-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .badge {
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .badge-owner-tirth { background: rgba(61,142,255,0.15); color: var(--blue); border: 1px solid rgba(61,142,255,0.25); }
+  .badge-owner-man   { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+  .badge-owner-both  { background: rgba(0,229,160,0.12); color: var(--green); border: 1px solid rgba(0,229,160,0.2); }
+  .badge-critical { background: rgba(255,85,85,0.12); color: var(--red); border: 1px solid rgba(255,85,85,0.2); }
+  .badge-high     { background: rgba(255,184,48,0.12); color: var(--amber); border: 1px solid rgba(255,184,48,0.2); }
+  .badge-medium   { background: rgba(61,142,255,0.1); color: var(--blue); border: 1px solid rgba(61,142,255,0.2); }
+  .badge-eta      { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+
+  /* expand toggle */
+  .expand-btn {
+    flex-shrink: 0; margin-top: 2px;
+    width: 22px; height: 22px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--text2);
+    transition: all 0.2s; user-select: none;
+  }
+  .expand-btn:hover { background: var(--border2); color: var(--text); }
+  .expand-btn.open { color: var(--green); border-color: var(--green); transform: rotate(180deg); }
+
+  /* detail panel */
+  .task-detail {
+    display: none;
+    padding: 0 18px 16px 50px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+  .task-detail.open { display: block; }
+
+  .detail-section { margin-top: 14px; }
+  .detail-label {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    color: var(--text3); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .detail-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .steps { list-style: none; }
+  .steps li {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 12px; color: var(--text); line-height: 1.6;
+    padding: 4px 0;
+  }
+  .steps li::before {
+    content: '→';
+    font-family: var(--mono); color: var(--text3); flex-shrink: 0;
+    font-size: 11px; margin-top: 2px;
+  }
+
+  .code-snippet {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #8BFFC8;
+    margin-top: 6px;
+    overflow-x: auto;
+    line-height: 1.6;
+    white-space: pre;
+  }
+  .code-snippet .cm { color: var(--text3); }
+  .code-snippet .kw { color: var(--purple); }
+  .code-snippet .str { color: var(--amber); }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px; margin-top: 6px;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .tool-card:hover { border-color: var(--green); transform: translateY(-1px); }
+  .tool-name {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    color: var(--green); margin-bottom: 2px;
+  }
+  .tool-free {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--green2); background: var(--green-dim);
+    padding: 1px 6px; border-radius: 3px;
+    display: inline-block; margin-bottom: 4px;
+  }
+  .tool-desc { font-size: 11px; color: var(--text2); line-height: 1.4; }
+
+  .note-box {
+    background: var(--amber-dim);
+    border: 1px solid rgba(255,184,48,0.2);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 6px 6px 0;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+  .note-box strong { color: var(--amber); }
+
+  /* ── FLOATING PROGRESS ───────────────────────── */
+  .float-bar {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-family: var(--mono); font-size: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    z-index: 300;
+    backdrop-filter: blur(16px);
+    min-width: 180px;
+  }
+  .float-count { font-size: 22px; font-weight: 700; color: var(--green); }
+  .float-label { color: var(--text2); font-size: 10px; }
+
+  /* ── SCROLLBAR ───────────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  @media(max-width:600px) {
+    .header { padding: 20px 16px; }
+    .main { padding: 20px 16px; }
+    .task-top { padding: 12px 14px 8px; }
+    .task-detail { padding: 0 14px 14px 42px; }
+    .tools-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-row">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">Quality<span>Pilot</span></div>
+    </div>
+    <div class="header-sub">
+      Day 1 Sprint Board &nbsp;·&nbsp; <b>Tirth</b> = Backend/API &nbsp;·&nbsp; <b>Man</b> = Frontend/UX &nbsp;·&nbsp; Phase 1 · Week 1
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>0 / 28 tasks done</span>
+        <span id="pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot" style="background:var(--blue)"></div>Tirth — Backend / API</div>
+    <div class="legend-item"><div class="leg-dot" style="background:var(--purple)"></div>Man — Frontend / UX</div>
+    <div class="legend-item"><div class="leg-dot" style="background:var(--green)"></div>Both — Shared</div>
+    <div class="legend-item"><div class="leg-dot" style="background:var(--red)"></div>Critical</div>
+    <div class="legend-item"><div class="leg-dot" style="background:var(--amber)"></div>High</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION A — BACKEND
+  ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header" style="color:var(--blue)">
+      <span class="sh-icon">🔧</span>
+      <span class="sh-title">BACKEND &amp; API — Tirth</span>
+      <span class="sh-count" id="cnt-backend">0 / 14</span>
+    </div>
+    <div class="section-body" id="sec-backend">
+
+      <!-- T1 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-01</span>
+              <span class="task-title">Set up monorepo: Next.js frontend + Hono backend in one repo</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 1 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Create GitHub repo: <code style="color:var(--green);font-family:var(--mono)">qualitypilot</code> — initialize with README</li>
+              <li>Install pnpm globally: <code style="color:var(--green);font-family:var(--mono)">npm i -g pnpm</code> — use pnpm workspaces for monorepo</li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">pnpm-workspace.yaml</code> at root pointing to <code style="color:var(--green);font-family:var(--mono)">apps/*</code> and <code style="color:var(--green);font-family:var(--mono)">packages/*</code></li>
+              <li>Scaffold frontend: <code style="color:var(--green);font-family:var(--mono)">pnpm create next-app apps/web --typescript --tailwind --app</code></li>
+              <li>Scaffold backend: <code style="color:var(--green);font-family:var(--mono)">mkdir apps/api && cd apps/api && pnpm init</code> then install Hono</li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">packages/types</code> — shared TypeScript interfaces for API contracts (PR, Checklist, Company)</li>
+              <li>Set up root <code style="color:var(--green);font-family:var(--mono)">tsconfig.json</code> with path aliases so <code style="color:var(--green);font-family:var(--mono)">@types/*</code> works in both apps</li>
+              <li>Add <code style="color:var(--green);font-family:var(--mono)">.env.example</code> at root — list ALL environment variables needed (Supabase, Claude, GitHub, Redis)</li>
+              <li>Set up Prettier + ESLint at root level so both apps share config</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Commands</div>
+            <div class="code-snippet"><span class="cm"># Root package.json scripts</span>
+"scripts": {
+  "dev:web": "pnpm --filter web dev",
+  "dev:api": "pnpm --filter api dev",
+  "dev": "pnpm run dev:web & pnpm run dev:api",
+  "build": "pnpm -r build"
+}
+
+<span class="cm"># Install Hono in api</span>
+cd apps/api && pnpm add hono @hono/node-server tsx</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free AI Tools to Use</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://cursor.sh" target="_blank">
+                <div class="tool-name">Cursor</div>
+                <div class="tool-free">FREE tier</div>
+                <div class="tool-desc">AI code editor. Use Cmd+K to scaffold boilerplate. Best for monorepo setup.</div>
+              </a>
+              <a class="tool-card" href="https://v0.dev" target="_blank">
+                <div class="tool-name">v0 by Vercel</div>
+                <div class="tool-free">FREE</div>
+                <div class="tool-desc">Generate Next.js component stubs. Great for scaffolding folder structure fast.</div>
+              </a>
+              <a class="tool-card" href="https://claude.ai" target="_blank">
+                <div class="tool-name">Claude.ai</div>
+                <div class="tool-free">FREE tier</div>
+                <div class="tool-desc">Paste your pnpm-workspace.yaml and ask "is this correct for Next.js + Hono monorepo?"</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T2 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-02</span>
+              <span class="task-title">Initialize Supabase project + full DB schema (companies, prs, checklists, feedback)</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 1 · Afternoon</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Go to supabase.com → New Project → name it <code style="color:var(--green);font-family:var(--mono)">qualitypilot</code></li>
+              <li>Copy <code style="color:var(--green);font-family:var(--mono)">SUPABASE_URL</code> and <code style="color:var(--green);font-family:var(--mono)">SUPABASE_ANON_KEY</code> to .env</li>
+              <li>Open SQL Editor in Supabase dashboard and run the schema below</li>
+              <li>Install Supabase client: <code style="color:var(--green);font-family:var(--mono)">pnpm add @supabase/supabase-js</code></li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">packages/db/index.ts</code> — exports a typed Supabase client using generated types</li>
+              <li>Generate TypeScript types from DB: <code style="color:var(--green);font-family:var(--mono)">supabase gen types typescript --project-id YOUR_ID > packages/types/db.ts</code></li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Full SQL Schema</div>
+            <div class="code-snippet"><span class="cm">-- Companies table</span>
+<span class="kw">CREATE TABLE</span> companies (
+  id          UUID <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  name        TEXT <span class="kw">NOT NULL</span>,
+  github_org  TEXT,
+  created_at  TIMESTAMPTZ <span class="kw">DEFAULT</span> now()
+);
+
+<span class="cm">-- PRs analyzed</span>
+<span class="kw">CREATE TABLE</span> pull_requests (
+  id          UUID <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  company_id  UUID <span class="kw">REFERENCES</span> companies(id),
+  repo        TEXT <span class="kw">NOT NULL</span>,
+  pr_number   INT <span class="kw">NOT NULL</span>,
+  pr_title    TEXT,
+  diff_url    TEXT,
+  status      TEXT <span class="kw">DEFAULT</span> <span class="str">'pending'</span>,
+  created_at  TIMESTAMPTZ <span class="kw">DEFAULT</span> now(),
+  <span class="kw">UNIQUE</span>(company_id, repo, pr_number)
+);
+
+<span class="cm">-- QA checklists generated by AI</span>
+<span class="kw">CREATE TABLE</span> checklists (
+  id          UUID <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  pr_id       UUID <span class="kw">REFERENCES</span> pull_requests(id),
+  company_id  UUID <span class="kw">REFERENCES</span> companies(id),
+  risk_level  TEXT, <span class="cm">-- 'high' | 'medium' | 'low'</span>
+  test_cases  JSONB, <span class="cm">-- array of {step, expected, area}</span>
+  raw_prompt  TEXT,
+  created_at  TIMESTAMPTZ <span class="kw">DEFAULT</span> now()
+);
+
+<span class="cm">-- User feedback on checklists</span>
+<span class="kw">CREATE TABLE</span> feedback (
+  id           UUID <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  checklist_id UUID <span class="kw">REFERENCES</span> checklists(id),
+  company_id   UUID <span class="kw">REFERENCES</span> companies(id),
+  type         TEXT, <span class="cm">-- 'bug_found' | 'helpful' | 'not_helpful'</span>
+  note         TEXT,
+  created_at   TIMESTAMPTZ <span class="kw">DEFAULT</span> now()
+);</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://supabase.com" target="_blank">
+                <div class="tool-name">Supabase</div>
+                <div class="tool-free">FREE — 500MB DB</div>
+                <div class="tool-desc">Postgres + auth + realtime + storage. Free tier is more than enough for Phase 1.</div>
+              </a>
+              <a class="tool-card" href="https://supabase.com/docs/guides/cli" target="_blank">
+                <div class="tool-name">Supabase CLI</div>
+                <div class="tool-free">FREE</div>
+                <div class="tool-desc">Run migrations locally, generate TypeScript types from your schema automatically.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T3 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-03</span>
+              <span class="task-title">Enable Row-Level Security (RLS) on ALL tables — company isolation</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 1</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Why this can't wait</div>
+            <div class="note-box"><strong>⚠️ Non-negotiable:</strong> If company A can ever see company B's QA checklists, you lose both customers and face a lawsuit. Set RLS on Day 1 before writing a single API endpoint. It takes 10 minutes and saves you from a catastrophic data breach.</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">SQL to Run</div>
+            <div class="code-snippet"><span class="cm">-- Enable RLS on all tables</span>
+<span class="kw">ALTER TABLE</span> companies        <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> pull_requests    <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> checklists       <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> feedback         <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="cm">-- Policy: company can only see its own data</span>
+<span class="kw">CREATE POLICY</span> <span class="str">"company_isolation"</span> <span class="kw">ON</span> checklists
+  <span class="kw">FOR ALL USING</span> (company_id = auth.uid()::uuid);
+
+<span class="cm">-- Repeat for pull_requests and feedback</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T4 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-04</span>
+              <span class="task-title">Create GitHub App + OAuth flow — get repo read permission</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 2 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Go to GitHub → Settings → Developer Settings → GitHub Apps → New GitHub App</li>
+              <li>Set name: <code style="color:var(--green);font-family:var(--mono)">QualityPilot</code>, homepage URL: <code style="color:var(--green);font-family:var(--mono)">https://qualitypilot.app</code></li>
+              <li>Webhook URL: <code style="color:var(--green);font-family:var(--mono)">https://YOUR_API/webhooks/github</code> (use ngrok for local dev)</li>
+              <li>Permissions needed: <code style="color:var(--green);font-family:var(--mono)">Pull Requests: Read</code>, <code style="color:var(--green);font-family:var(--mono)">Contents: Read</code></li>
+              <li>Subscribe to events: <code style="color:var(--green);font-family:var(--mono)">pull_request</code> (opened, synchronize, reopened)</li>
+              <li>Download private key → save as <code style="color:var(--green);font-family:var(--mono)">GITHUB_PRIVATE_KEY</code> env var (base64 encode it)</li>
+              <li>Install <code style="color:var(--green);font-family:var(--mono)">@octokit/app</code> and <code style="color:var(--green);font-family:var(--mono)">@octokit/rest</code> to interact with GitHub API</li>
+              <li>For local testing: <code style="color:var(--green);font-family:var(--mono)">npx ngrok http 3001</code> — use the HTTPS URL as webhook URL in GitHub App settings</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://ngrok.com" target="_blank">
+                <div class="tool-name">ngrok</div>
+                <div class="tool-free">FREE tier</div>
+                <div class="tool-desc">Tunnel localhost to public HTTPS URL. Essential for GitHub webhook testing without deploying.</div>
+              </a>
+              <a class="tool-card" href="https://github.com/octokit/octokit.js" target="_blank">
+                <div class="tool-name">Octokit.js</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Official GitHub SDK. Handles auth, rate limits, pagination automatically.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T5 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-05</span>
+              <span class="task-title">Webhook endpoint: receive PR event → validate signature → push to BullMQ queue</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 2</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">The Golden Rule</div>
+            <div class="note-box"><strong>MUST respond in &lt;50ms.</strong> Receive webhook → validate → push to queue → return 202. ZERO processing in the handler. If you call Claude API here, GitHub will timeout, retry, and you get duplicate jobs.</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Code</div>
+            <div class="code-snippet"><span class="kw">import</span> { Hono } from <span class="str">'hono'</span>
+<span class="kw">import</span> { Queue } from <span class="str">'bullmq'</span>
+<span class="kw">import</span> { verifyWebhookSignature } from <span class="str">'./github'</span>
+
+<span class="kw">const</span> prQueue = <span class="kw">new</span> Queue(<span class="str">'pr-analysis'</span>, {
+  connection: { url: process.env.REDIS_URL }
+})
+
+app.post(<span class="str">'/webhooks/github'</span>, <span class="kw">async</span> (c) => {
+  <span class="cm">// 1. Verify it's really GitHub (HMAC-SHA256)</span>
+  <span class="kw">const</span> sig = c.req.header(<span class="str">'x-hub-signature-256'</span>)
+  <span class="kw">const</span> body = <span class="kw">await</span> c.req.text()
+  <span class="kw">if</span> (!verifyWebhookSignature(body, sig)) {
+    <span class="kw">return</span> c.json({ error: <span class="str">'unauthorized'</span> }, 401)
+  }
+
+  <span class="kw">const</span> event = JSON.parse(body)
+  <span class="kw">if</span> (event.action !== <span class="str">'opened'</span> && event.action !== <span class="str">'synchronize'</span>) {
+    <span class="kw">return</span> c.json({ ok: true }) <span class="cm">// ignore other events</span>
+  }
+
+  <span class="cm">// 2. Push to queue — do NOT process here</span>
+  <span class="kw">await</span> prQueue.add(<span class="str">'analyze'</span>, {
+    repo:      event.repository.full_name,
+    prNumber:  event.pull_request.number,
+    prTitle:   event.pull_request.title,
+    diffUrl:   event.pull_request.diff_url,
+    companyId: <span class="str">'lookup-by-github-org'</span>
+  }, { jobId: `${event.repository.full_name}-${event.pull_request.number}` })
+
+  <span class="cm">// 3. Return immediately — NEVER make GitHub wait</span>
+  <span class="kw">return</span> c.json({ queued: true }, 202)
+})</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T6 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-06</span>
+              <span class="task-title">Set up Redis (Upstash free) + BullMQ worker skeleton with error handling</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 2</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Sign up at <strong>upstash.com</strong> → Create Redis database → copy <code style="color:var(--green);font-family:var(--mono)">REDIS_URL</code> to .env</li>
+              <li>Install: <code style="color:var(--green);font-family:var(--mono)">pnpm add bullmq ioredis</code></li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">apps/api/src/workers/pr-analysis.ts</code></li>
+              <li>Add <code style="color:var(--green);font-family:var(--mono)">worker.on('failed')</code> handler — log to console (Sentry later)</li>
+              <li>Add <code style="color:var(--green);font-family:var(--mono)">attempts: 3, backoff: { type: 'exponential', delay: 2000 }</code> to queue options for auto-retry</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://upstash.com" target="_blank">
+                <div class="tool-name">Upstash Redis</div>
+                <div class="tool-free">FREE — 10k req/day</div>
+                <div class="tool-desc">Serverless Redis. No credit card. Perfect for BullMQ job queue in Phase 1.</div>
+              </a>
+              <a class="tool-card" href="https://docs.bullmq.io" target="_blank">
+                <div class="tool-name">BullMQ</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Production-grade job queue. Handles retries, delays, concurrency automatically.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T7 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-07</span>
+              <span class="task-title">Integrate Claude API: GitHub diff in → structured QA checklist JSON out</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 3 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Get API key: console.anthropic.com → Create API Key → save as <code style="color:var(--green);font-family:var(--mono)">ANTHROPIC_API_KEY</code></li>
+              <li>Install: <code style="color:var(--green);font-family:var(--mono)">pnpm add @anthropic-ai/sdk</code></li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">apps/api/src/ai/generate-checklist.ts</code></li>
+              <li>Tell Claude to respond in JSON — parse with Zod schema to validate output</li>
+              <li>Truncate diffs longer than 15,000 tokens before sending (add "... diff truncated" note)</li>
+              <li>Use <code style="color:var(--green);font-family:var(--mono)">claude-3-5-haiku-20241022</code> model — cheapest, fastest, good enough for Phase 1</li>
+              <li>Wrap in try/catch — if Claude fails, mark job as failed and retry (BullMQ handles it)</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Function skeleton</div>
+            <div class="code-snippet"><span class="kw">import</span> Anthropic from <span class="str">'@anthropic-ai/sdk'</span>
+<span class="kw">import</span> { z } from <span class="str">'zod'</span>
+
+<span class="kw">const</span> ChecklistSchema = z.object({
+  riskLevel:  z.enum([<span class="str">'high'</span>, <span class="str">'medium'</span>, <span class="str">'low'</span>]),
+  summary:    z.string(),
+  testCases:  z.array(z.object({
+    area:     z.string(),  <span class="cm">// e.g. "Authentication"</span>
+    step:     z.string(),  <span class="cm">// e.g. "Go to /login, enter invalid email"</span>
+    expected: z.string()   <span class="cm">// e.g. "Error message shown, no token created"</span>
+  }))
+})
+
+<span class="kw">export async function</span> generateChecklist(diff: string) {
+  <span class="kw">const</span> client = <span class="kw">new</span> Anthropic()
+  <span class="kw">const</span> msg = <span class="kw">await</span> client.messages.create({
+    model: <span class="str">'claude-3-5-haiku-20241022'</span>,
+    max_tokens: 2048,
+    system: SYSTEM_PROMPT, <span class="cm">// T-08 below</span>
+    messages: [{ role: <span class="str">'user'</span>, content: diff }]
+  })
+  <span class="kw">const</span> raw = JSON.parse(msg.content[0].text)
+  <span class="kw">return</span> ChecklistSchema.parse(raw) <span class="cm">// throws if AI output is wrong</span>
+}</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://console.anthropic.com" target="_blank">
+                <div class="tool-name">Anthropic Console</div>
+                <div class="tool-free">$5 free credits</div>
+                <div class="tool-desc">Claude API. Haiku model is ~$0.25 per 1M tokens — Phase 1 will cost cents.</div>
+              </a>
+              <a class="tool-card" href="https://zod.dev" target="_blank">
+                <div class="tool-name">Zod</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Validate AI output schema. If Claude returns garbage JSON, Zod catches it before it hits your DB.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T8 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-08</span>
+              <span class="task-title">Write the system prompt — this IS your core product, spend 80% of time here</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 3 · All Day</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Why this matters more than anything</div>
+            <div class="note-box"><strong>The system prompt is your real product.</strong> A bad prompt gives "test the UI" nonsense. A good prompt gives "Go to /checkout. Add item. Remove it. Click Pay — button should stay disabled." Competitors who built generic GPT wrappers have a bad prompt. This is how you win.</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Starting prompt template</div>
+            <div class="code-snippet"><span class="kw">const</span> SYSTEM_PROMPT = `
+You are a senior QA engineer analyzing a GitHub pull request diff.
+Your job: generate a specific, actionable QA test checklist.
+
+Rules:
+1. Be SPECIFIC. Not "test the login" — say "Go to /login. Enter invalid email.
+   Click Submit. Expect: red error 'Invalid email format' appears."
+2. Focus on what CHANGED in this diff, not the whole app.
+3. Group tests by area (Auth, Payments, UI, API, etc.)
+4. Assess risk: HIGH if auth/payments/data touched, LOW if only CSS.
+5. Give 5-15 test cases. Quality over quantity.
+
+Respond ONLY with valid JSON matching this exact schema:
+{
+  "riskLevel": "high" | "medium" | "low",
+  "summary": "one sentence what this PR does",
+  "testCases": [
+    {
+      "area": "string",
+      "step": "exact steps QA tester should follow",
+      "expected": "exact expected outcome"
+    }
+  ]
+}
+No preamble. No explanation. Only JSON.
+`</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools to iterate prompt</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://console.anthropic.com/workbench" target="_blank">
+                <div class="tool-name">Anthropic Workbench</div>
+                <div class="tool-free">FREE with API key</div>
+                <div class="tool-desc">Test prompts with real PR diffs. Iterate without writing code. Your best friend for prompt engineering.</div>
+              </a>
+              <a class="tool-card" href="https://promptlayer.com" target="_blank">
+                <div class="tool-name">PromptLayer</div>
+                <div class="tool-free">FREE tier</div>
+                <div class="tool-desc">Log and compare prompt versions. See which prompt version gives better checklists.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T9 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-09</span>
+              <span class="task-title">Zod validation on ALL API inputs — every endpoint, no exceptions</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 3</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Install: <code style="color:var(--green);font-family:var(--mono)">pnpm add zod @hono/zod-validator</code></li>
+              <li>Create Zod schemas in <code style="color:var(--green);font-family:var(--mono)">packages/types/schemas.ts</code> — shared between frontend and backend</li>
+              <li>Wrap every POST endpoint with <code style="color:var(--green);font-family:var(--mono)">zValidator('json', MySchema)</code> middleware</li>
+              <li>Validate webhook payload before pushing to queue</li>
+              <li>Validate AI JSON output before saving to DB</li>
+              <li>Return <code style="color:var(--green);font-family:var(--mono)">400</code> with field-level error details if validation fails</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- T10 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-10</span>
+              <span class="task-title">Idempotency — same PR pushed twice must not create 2 checklists</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 4 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">How to implement</div>
+            <ul class="steps">
+              <li>Set BullMQ <code style="color:var(--green);font-family:var(--mono)">jobId: `${repo}-${prNumber}`</code> — BullMQ deduplicates by jobId automatically</li>
+              <li>Add <code style="color:var(--green);font-family:var(--mono)">UNIQUE(company_id, repo, pr_number)</code> constraint to pull_requests table (already in T-02 schema)</li>
+              <li>In worker: use Supabase <code style="color:var(--green);font-family:var(--mono">upsert</code> instead of insert for pull_requests row</li>
+              <li>Check if checklist already exists for this PR before calling Claude — saves API costs</li>
+              <li>Use <code style="color:var(--green);font-family:var(--mono)">onConflict: 'ignore'</code> for duplicate webhook events</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- T11 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-11</span>
+              <span class="task-title">REST API: GET /checklist/:id · GET /prs · POST /feedback</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 4</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Endpoints to build</div>
+            <div class="code-snippet">GET  /api/prs              → list PRs for company (paginated, 20/page)
+GET  /api/checklists/:id  → single checklist with test cases
+POST /api/feedback        → { checklistId, type: 'bug_found'|'helpful'|'not_helpful', note? }
+GET  /api/health          → { ok: true } — for Railway health check</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Each endpoint: validate input (Zod) → query Supabase → return typed response</li>
+              <li>Add <code style="color:var(--green);font-family:var(--mono)">company_id</code> filter on every Supabase query — never return all data</li>
+              <li>For now, hardcode <code style="color:var(--green);font-family:var(--mono)">companyId</code> from a header — auth comes in Phase 2</li>
+              <li>Export types from <code style="color:var(--green);font-family:var(--mono)">packages/types</code> so frontend can import them directly</li>
+              <li>Test all endpoints with <strong>Bruno</strong> (free Postman alternative) before wiring to frontend</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://usebruno.com" target="_blank">
+                <div class="tool-name">Bruno</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Postman alternative. Stores collections in git. Test all API endpoints before frontend connects.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T12 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-12</span>
+              <span class="task-title">Set up .env + secrets — Vercel env vars + Railway config</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-medium">Medium</span>
+              <span class="badge badge-eta">Day 1</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">All env vars needed</div>
+            <div class="code-snippet"><span class="cm"># .env.example — commit this to repo</span>
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=   <span class="cm"># for server-side operations</span>
+ANTHROPIC_API_KEY=
+REDIS_URL=
+GITHUB_APP_ID=
+GITHUB_PRIVATE_KEY=          <span class="cm"># base64 encoded</span>
+GITHUB_WEBHOOK_SECRET=       <span class="cm"># random string, set in GitHub App settings</span>
+NEXT_PUBLIC_API_URL=         <span class="cm"># frontend: URL of Hono API</span></div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Note</div>
+            <div class="note-box">Never commit your actual .env file. Add it to .gitignore immediately. Use <strong>Doppler</strong> (free) to sync secrets across machines if working together.</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://doppler.com" target="_blank">
+                <div class="tool-name">Doppler</div>
+                <div class="tool-free">FREE for 1 project</div>
+                <div class="tool-desc">Sync secrets between you and Man without sending .env files over WhatsApp. Secure and easy.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T13 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-13</span>
+              <span class="task-title">Deploy API to Railway — test full webhook → queue → worker → DB flow</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 5</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Sign up at railway.app → New Project → Deploy from GitHub repo</li>
+              <li>Point to <code style="color:var(--green);font-family:var(--mono)">apps/api</code> as root directory</li>
+              <li>Add all env vars from .env.example in Railway dashboard</li>
+              <li>Set start command: <code style="color:var(--green);font-family:var(--mono)">tsx src/index.ts</code></li>
+              <li>Update GitHub App webhook URL to Railway deployment URL</li>
+              <li>Open a test PR in a real repo → watch Railway logs → confirm checklist saved to Supabase</li>
+              <li>Check Supabase dashboard → Tables → checklists → row should appear within 30 seconds</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://railway.app" target="_blank">
+                <div class="tool-name">Railway</div>
+                <div class="tool-free">FREE — $5 credits/month</div>
+                <div class="tool-desc">Deploy Node.js apps in 2 minutes. Auto-deploys from GitHub. Perfect for Hono backend + BullMQ worker.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T14 -->
+      <div class="task" data-section="backend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">T-14</span>
+              <span class="task-title">Add basic error logging — console + Sentry free tier</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-tirth">Tirth</span>
+              <span class="badge badge-medium">Medium</span>
+              <span class="badge badge-eta">Day 5</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Sign up at sentry.io → Create project → Select Node.js</li>
+              <li>Install: <code style="color:var(--green);font-family:var(--mono)">pnpm add @sentry/node</code></li>
+              <li>Init Sentry at top of <code style="color:var(--green);font-family:var(--mono)">apps/api/src/index.ts</code></li>
+              <li>Wrap BullMQ worker <code style="color:var(--green);font-family:var(--mono)">on('failed')</code> to call <code style="color:var(--green);font-family:var(--mono)">Sentry.captureException(err)</code></li>
+              <li>Set alert in Sentry: email when error rate &gt; 0 (you want to know immediately)</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://sentry.io" target="_blank">
+                <div class="tool-name">Sentry</div>
+                <div class="tool-free">FREE — 5k errors/month</div>
+                <div class="tool-desc">Error tracking with stack traces. You'll know when a job fails before the user does.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION B — FRONTEND
+  ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header" style="color:var(--purple)">
+      <span class="sh-icon">🎨</span>
+      <span class="sh-title">FRONTEND &amp; UX — Man</span>
+      <span class="sh-count" id="cnt-frontend">0 / 10</span>
+    </div>
+    <div class="section-body" id="sec-frontend">
+
+      <!-- F1 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-01</span>
+              <span class="task-title">Set up Next.js app with Tailwind + dark theme design system + fonts</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 1 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>The Next.js app is already created in T-01. Your job: set up the design system inside it</li>
+              <li>Edit <code style="color:var(--green);font-family:var(--mono)">tailwind.config.ts</code> — add custom colors: green <code style="color:var(--green);font-family:var(--mono)">#00E5A0</code>, blue <code style="color:var(--green);font-family:var(--mono)">#3D8EFF</code>, bg <code style="color:var(--green);font-family:var(--mono)">#080A0F</code></li>
+              <li>Add font to <code style="color:var(--green);font-family:var(--mono)">app/layout.tsx</code>: use <code style="color:var(--green);font-family:var(--mono)">Space Grotesk</code> from Google Fonts (matches dev tool aesthetic)</li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">app/globals.css</code> with CSS variables — all colors defined once, used everywhere</li>
+              <li>Set <code style="color:var(--green);font-family:var(--mono)">body</code> background to <code style="color:var(--green);font-family:var(--mono)">#080A0F</code> and default text color</li>
+              <li>Create <code style="color:var(--green);font-family:var(--mono)">components/ui/</code> folder — this will hold all reusable components from F-02</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://v0.dev" target="_blank">
+                <div class="tool-name">v0 by Vercel</div>
+                <div class="tool-free">FREE — 200 credits/month</div>
+                <div class="tool-desc">Describe your design system and get Tailwind components instantly. Huge time saver for UI setup.</div>
+              </a>
+              <a class="tool-card" href="https://uicolors.app" target="_blank">
+                <div class="tool-name">UI Colors</div>
+                <div class="tool-free">FREE</div>
+                <div class="tool-desc">Generate full Tailwind color palettes from a single hex. Paste in #00E5A0 and get all 50-950 shades.</div>
+              </a>
+              <a class="tool-card" href="https://ui.shadcn.com" target="_blank">
+                <div class="tool-name">shadcn/ui</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Copy-paste components into your codebase. You own the code. Dark theme included. Use for Button, Badge, Toast.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- F2 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-02</span>
+              <span class="task-title">Build component kit: Button, Card, Badge (risk level), Spinner, Toast</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 1 · Afternoon</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Components to build</div>
+            <ul class="steps">
+              <li><strong>Button</strong> — variants: primary (green), secondary (outline), danger (red). States: loading spinner inside button.</li>
+              <li><strong>RiskBadge</strong> — HIGH (red bg), MEDIUM (amber bg), LOW (green bg). Used everywhere on PR list and checklist header.</li>
+              <li><strong>Card</strong> — dark surface, subtle border, hover state lifts slightly. Used for PR list items.</li>
+              <li><strong>Spinner</strong> — simple CSS animation. Used in Button loading state and page skeleton.</li>
+              <li><strong>Toast</strong> — success/error notification that slides in from top-right. Use <code style="color:var(--green);font-family:var(--mono)">react-hot-toast</code> (free).</li>
+              <li><strong>EmptyState</strong> — "No PRs yet. Connect your GitHub repo." with illustration. Critical for first-time users.</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://react-hot-toast.com" target="_blank">
+                <div class="tool-name">react-hot-toast</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Best toast library. Zero config. Works perfectly with Next.js App Router.</div>
+              </a>
+              <a class="tool-card" href="https://lucide.dev" target="_blank">
+                <div class="tool-name">Lucide Icons</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Beautiful icon set. <code>pnpm add lucide-react</code>. Used for CheckCircle, AlertTriangle, ChevronRight etc.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- F3 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-03</span>
+              <span class="task-title">Landing page: hero + 3 features + "Connect GitHub" CTA button</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 2 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Page sections to build</div>
+            <ul class="steps">
+              <li><strong>Navbar</strong> — Logo left, "Get Early Access" button right. Sticky on scroll.</li>
+              <li><strong>Hero</strong> — Headline: "Stop guessing what to test. QualityPilot tells you." Sub: "AI reads your PR diff and generates a precise QA checklist in 30 seconds." CTA: big green "Connect GitHub → " button.</li>
+              <li><strong>How it works</strong> — 3 steps with icons: 1. Push PR 2. AI reads diff 3. QA checklist ready</li>
+              <li><strong>Social proof</strong> — Even if fake for now: "Join 3 early teams saving 2hrs per PR" — put a real number later</li>
+              <li>Keep it SHORT. One page. No pricing. No FAQ. Just get them to click Connect GitHub.</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://v0.dev" target="_blank">
+                <div class="tool-name">v0 by Vercel</div>
+                <div class="tool-free">FREE</div>
+                <div class="tool-desc">Prompt: "Dark SaaS landing page for a developer tool. Hero with green CTA. Minimal, no gradients." Done in 2 min.</div>
+              </a>
+              <a class="tool-card" href="https://magicui.design" target="_blank">
+                <div class="tool-name">Magic UI</div>
+                <div class="tool-free">FREE components</div>
+                <div class="tool-desc">Animated Tailwind components. Use their "animated beam" for the "how it works" section flow.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- F4 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-04</span>
+              <span class="task-title">GitHub OAuth connect flow UI — success screen + error screen</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 2 · Afternoon</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Screens to build</div>
+            <ul class="steps">
+              <li><strong>/connect</strong> — "Connect GitHub" button, what permissions are requested, why it's safe</li>
+              <li><strong>/connect/callback</strong> — Loading spinner while OAuth completes. Redirect from GitHub lands here.</li>
+              <li><strong>/connect/success</strong> — "You're connected! Select repos to monitor" → checklist of repos from GitHub API</li>
+              <li><strong>/connect/error</strong> — "Something went wrong. Try again." with retry button</li>
+              <li>Route guard: if not connected → redirect to /connect. Tirth handles the backend OAuth logic.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- F5 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-05</span>
+              <span class="task-title">Dashboard: PR list with repo name, PR title, risk badge, time ago</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 3 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">UI elements per PR card</div>
+            <ul class="steps">
+              <li>Repo name (e.g. <code style="color:var(--green);font-family:var(--mono)">acme/frontend</code>) in monospace font</li>
+              <li>PR title — truncate at 60 chars if too long</li>
+              <li>Risk badge: HIGH (red), MEDIUM (amber), LOW (green) — from API <code style="color:var(--green);font-family:var(--mono)">riskLevel</code> field</li>
+              <li>Time ago: "3 minutes ago" — use <code style="color:var(--green);font-family:var(--mono)">date-fns formatDistanceToNow()</code></li>
+              <li>PR number: <code style="color:var(--green);font-family:var(--mono)">#142</code> in muted text</li>
+              <li>Click → navigate to <code style="color:var(--green);font-family:var(--mono)">/checklist/[id]</code></li>
+              <li>Auto-refresh every 30 seconds (use SWR with <code style="color:var(--green);font-family:var(--mono)">refreshInterval: 30000</code>) so new PRs appear without page reload</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://swr.vercel.app" target="_blank">
+                <div class="tool-name">SWR</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Data fetching with auto-refresh, caching, revalidation. <code>pnpm add swr</code>. Perfect for dashboard polling.</div>
+              </a>
+              <a class="tool-card" href="https://date-fns.org" target="_blank">
+                <div class="tool-name">date-fns</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">formatDistanceToNow() for "3 minutes ago". Much better than moment.js. Tree-shakeable.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- F6 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-06</span>
+              <span class="task-title">Checklist detail page — test cases list, risk header, "Bug Found" button</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 3 · Afternoon</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Page sections</div>
+            <ul class="steps">
+              <li><strong>Header</strong> — PR title, PR number, repo name, risk badge (big), "View on GitHub →" link</li>
+              <li><strong>Summary</strong> — One-line AI summary of what this PR does</li>
+              <li><strong>Test cases list</strong> — Each item: area tag (blue pill), step text, expected result in green. Checkbox on left — QA tester can check them off as they go (local state only).</li>
+              <li><strong>Action buttons</strong> — "🐛 Bug Found" (red, prominent), "👍 Helpful" (subtle). These call POST /api/feedback.</li>
+              <li><strong>Copy all button</strong> — Copies all test cases as plain text to clipboard. Testers love this.</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Note</div>
+            <div class="note-box"><strong>The "Bug Found" button is your most important feature.</strong> Every click is training data for your moat (company history memory in Phase 3). Make it large, obvious, and satisfying to click.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- F7 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-07</span>
+              <span class="task-title">Loading skeletons + empty states — critical for first-time users</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 4 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">States to design for</div>
+            <ul class="steps">
+              <li><strong>Loading skeleton</strong> — animated gray blocks where PR cards will appear. Use Tailwind <code style="color:var(--green);font-family:var(--mono)">animate-pulse</code> class. Show while SWR is fetching.</li>
+              <li><strong>Empty dashboard</strong> — "No PRs analyzed yet. Open a PR in your connected repo and it will appear here in ~30 seconds." With a small animated indicator.</li>
+              <li><strong>Processing state</strong> — PR card with "⏳ Analyzing..." instead of risk badge, when status is 'pending'</li>
+              <li><strong>Error state</strong> — "Failed to load. Retry?" with retry button that calls SWR mutate()</li>
+              <li><strong>Checklist loading</strong> — skeleton while fetching single checklist detail page</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- F8 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-08</span>
+              <span class="task-title">Responsive layout — works on mobile + desktop without horizontal scroll</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-medium">Medium</span>
+              <span class="badge badge-eta">Day 4</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Use Tailwind responsive prefixes: <code style="color:var(--green);font-family:var(--mono)">sm:</code>, <code style="color:var(--green);font-family:var(--mono)">md:</code>, <code style="color:var(--green);font-family:var(--mono)">lg:</code></li>
+              <li>Max-width container: <code style="color:var(--green);font-family:var(--mono)">max-w-3xl mx-auto px-4</code> — prevents content from stretching too wide on desktop</li>
+              <li>PR cards: full width on mobile, comfortable padding on desktop</li>
+              <li>Test in Chrome DevTools with iPhone 14 Pro preset (390px wide) before shipping</li>
+              <li>Sidebar navigation (if any) collapses to bottom nav on mobile</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- F9 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-09</span>
+              <span class="task-title">Feedback modal — "Was this checklist useful?" with thumbs + note field</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 5 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Modal design</div>
+            <ul class="steps">
+              <li>Trigger: clicking "Bug Found" or "Helpful" opens a small modal overlay</li>
+              <li>Two big buttons: 👍 Helpful / 👎 Not helpful — visually selected state when clicked</li>
+              <li>Optional text area: "What was missing or wrong? (optional)"</li>
+              <li>Submit → POST /api/feedback → close modal → show success toast "Thanks for the feedback!"</li>
+              <li>If user already gave feedback on this checklist, show "You already rated this" instead of buttons</li>
+              <li>Store submitted checklist IDs in localStorage so modal doesn't show again after submission</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- F10 -->
+      <div class="task" data-section="frontend">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">F-10</span>
+              <span class="task-title">Polish: favicon, meta tags, og:image, deploy to Vercel</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-man">Man</span>
+              <span class="badge badge-medium">Medium</span>
+              <span class="badge badge-eta">Day 5</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Create favicon: use <strong>favicon.io</strong> (free) — text "QP" on dark bg, green color. Download and put in <code style="color:var(--green);font-family:var(--mono)">app/favicon.ico</code></li>
+              <li>Edit <code style="color:var(--green);font-family:var(--mono)">app/layout.tsx</code> metadata: title, description, og:image</li>
+              <li>Create og:image (1200×630px): use <strong>Figma free tier</strong> — dark bg, logo, tagline. Save as PNG in <code style="color:var(--green);font-family:var(--mono)">public/og.png</code></li>
+              <li>Deploy to Vercel: <code style="color:var(--green);font-family:var(--mono)">npx vercel</code> → follow prompts → link to GitHub repo for auto-deploy</li>
+              <li>Add NEXT_PUBLIC_API_URL env var in Vercel dashboard pointing to Railway API URL</li>
+              <li>Share production URL with Tirth to update CORS settings on backend</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://vercel.com" target="_blank">
+                <div class="tool-name">Vercel</div>
+                <div class="tool-free">FREE — Hobby plan</div>
+                <div class="tool-desc">Best Next.js host. Auto-deploy from GitHub. Free SSL, CDN, custom domains. Zero config.</div>
+              </a>
+              <a class="tool-card" href="https://favicon.io" target="_blank">
+                <div class="tool-name">favicon.io</div>
+                <div class="tool-free">FREE</div>
+                <div class="tool-desc">Generate favicons from text or image. Downloads all sizes needed for all browsers.</div>
+              </a>
+              <a class="tool-card" href="https://figma.com" target="_blank">
+                <div class="tool-name">Figma</div>
+                <div class="tool-free">FREE tier</div>
+                <div class="tool-desc">Design og:image and any other graphics. Free tier allows 3 projects.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION C — SHARED
+  ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header" style="color:var(--green)">
+      <span class="sh-icon">🤝</span>
+      <span class="sh-title">SHARED — Both Together</span>
+      <span class="sh-count" id="cnt-shared">0 / 4</span>
+    </div>
+    <div class="section-body" id="sec-shared">
+
+      <!-- S1 -->
+      <div class="task" data-section="shared">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">S-01</span>
+              <span class="task-title">Agree on DB schema + API contract — do this FIRST before anything else</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-both">Both</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 1 · First 30 mins</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Why first</div>
+            <div class="note-box"><strong>Everything depends on this.</strong> Man can't build the dashboard without knowing what the API returns. Tirth can't build the API without knowing what Man needs. Spend 30 minutes together agreeing on the exact JSON shape of each endpoint response. Write it down in <code style="color:var(--green);font-family:var(--mono)">packages/types/index.ts</code>.</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Contract to agree on</div>
+            <div class="code-snippet"><span class="cm">// packages/types/index.ts — both import from here</span>
+
+<span class="kw">export interface</span> PR {
+  id: string
+  prNumber: number
+  prTitle: string
+  repo: string
+  riskLevel: <span class="str">'high'</span> | <span class="str">'medium'</span> | <span class="str">'low'</span> | null
+  status: <span class="str">'pending'</span> | <span class="str">'done'</span> | <span class="str">'failed'</span>
+  createdAt: string
+}
+
+<span class="kw">export interface</span> Checklist {
+  id: string
+  prId: string
+  summary: string
+  riskLevel: <span class="str">'high'</span> | <span class="str">'medium'</span> | <span class="str">'low'</span>
+  testCases: TestCase[]
+  createdAt: string
+}
+
+<span class="kw">export interface</span> TestCase {
+  area: string
+  step: string
+  expected: string
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S2 -->
+      <div class="task" data-section="shared">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">S-02</span>
+              <span class="task-title">Wire frontend to backend — fetch PR list + checklist + submit feedback</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-both">Both</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 4 · Afternoon</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">Step-by-step</div>
+            <ul class="steps">
+              <li>Tirth: make sure CORS is set to allow the Vercel frontend domain on the Hono API</li>
+              <li>Man: create <code style="color:var(--green);font-family:var(--mono)">lib/api.ts</code> — typed wrapper around fetch that calls backend. Import types from <code style="color:var(--green);font-family:var(--mono)">@qualitypilot/types</code></li>
+              <li>Replace all mock/hardcoded data in dashboard with real SWR fetches</li>
+              <li>Test: Man opens dashboard → should see PRs from Tirth's Railway API</li>
+              <li>Test: click a PR → checklist detail page should load with real test cases from Claude</li>
+              <li>Test: click "Bug Found" → POST hits API → row appears in Supabase feedback table</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- S3 -->
+      <div class="task" data-section="shared">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">S-03</span>
+              <span class="task-title">End-to-end test: push real PR → checklist appears in dashboard within 60s</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-both">Both</span>
+              <span class="badge badge-critical">Critical</span>
+              <span class="badge badge-eta">Day 5 · Morning</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">The test</div>
+            <ul class="steps">
+              <li>Both sit together (or on call)</li>
+              <li>Open a real PR to a connected test repo — make a small real code change</li>
+              <li>Watch Railway logs — webhook should arrive within 2 seconds</li>
+              <li>Watch BullMQ process the job — should take 10-30 seconds (Claude API call)</li>
+              <li>Dashboard should auto-refresh and show the new PR with risk badge</li>
+              <li>Click the PR → see full checklist with specific, real test cases about your code change</li>
+              <li>Click "Bug Found" → confirm it saves to Supabase</li>
+              <li>If any step fails — fix it before moving on. This is your MVP.</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools for debugging</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://smee.io" target="_blank">
+                <div class="tool-name">smee.io</div>
+                <div class="tool-free">FREE</div>
+                <div class="tool-desc">Webhook relay. Inspect exact GitHub webhook payloads. Alternative to ngrok for webhook debugging.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S4 -->
+      <div class="task" data-section="shared">
+        <div class="task-top">
+          <div class="task-check" onclick="toggle(this)"></div>
+          <div class="task-main">
+            <div class="task-title-row">
+              <span class="task-num">S-04</span>
+              <span class="task-title">Get 1 real external person to use it — collect raw unfiltered feedback</span>
+            </div>
+            <div class="task-meta">
+              <span class="badge badge-owner-both">Both</span>
+              <span class="badge badge-high">High</span>
+              <span class="badge badge-eta">Day 5 · Evening</span>
+            </div>
+          </div>
+          <div class="expand-btn" onclick="expand(this)">▼</div>
+        </div>
+        <div class="task-detail">
+          <div class="detail-section">
+            <div class="detail-label">How to find the first user</div>
+            <ul class="steps">
+              <li>Ask a dev friend or colleague: "I built something that generates QA test cases from your PRs automatically. Can I show you it on a call for 15 minutes?"</li>
+              <li>Do NOT explain how it works. Just give them the URL and watch them use it.</li>
+              <li>Record the call (with permission) — Loom free tier works</li>
+              <li>Ask 3 questions only: "What did you expect to happen?", "What was confusing?", "Would you use this again?"</li>
+              <li>DO NOT DEFEND your product. Just listen and write everything down.</li>
+              <li>The goal: find out if they use it a second time WITHOUT you reminding them. That's product-market fit signal.</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Free Tools</div>
+            <div class="tools-grid">
+              <a class="tool-card" href="https://loom.com" target="_blank">
+                <div class="tool-name">Loom</div>
+                <div class="tool-free">FREE — 25 videos</div>
+                <div class="tool-desc">Record user sessions. Watch where they hesitate. Invaluable for UX feedback.</div>
+              </a>
+              <a class="tool-card" href="https://cal.com" target="_blank">
+                <div class="tool-name">Cal.com</div>
+                <div class="tool-free">FREE / Open Source</div>
+                <div class="tool-desc">Scheduling link. "Book a 15-min demo" page. Looks professional, zero friction.</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating counter -->
+<div class="float-bar">
+  <div class="float-count" id="float-done">0</div>
+  <div class="float-label">of 28 tasks done</div>
+</div>
+
+<script>
+  let total = 0;
+  let done = 0;
+  const counts = { backend: { done: 0, total: 0 }, frontend: { done: 0, total: 0 }, shared: { done: 0, total: 0 } };
+  const STORAGE_KEY = 'qp_sprint_state';
+
+  // Load state
+  function loadState() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  }
+
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+
+  function recalc() {
+    const tasks = document.querySelectorAll('.task');
+    total = tasks.length;
+    done = document.querySelectorAll('.task.done').length;
+
+    ['backend','frontend','shared'].forEach(sec => {
+      const secTasks = document.querySelectorAll(`.task[data-section="${sec}"]`);
+      const secDone = document.querySelectorAll(`.task[data-section="${sec}"].done`);
+      const el = document.getElementById(`cnt-${sec}`);
+      if(el) el.textContent = `${secDone.length} / ${secTasks.length}`;
+    });
+
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById('prog').style.width = pct + '%';
+    document.getElementById('pct').textContent = pct + '%';
+    document.querySelector('.progress-label span').textContent = `${done} / ${total} tasks done`;
+    document.getElementById('float-done').textContent = done;
+  }
+
+  function toggle(checkEl) {
+    const task = checkEl.closest('.task');
+    const id = task.querySelector('.task-num').textContent;
+    const state = loadState();
+    const isDone = task.classList.toggle('done');
+    checkEl.classList.toggle('checked', isDone);
+    state[id] = isDone;
+    saveState(state);
+    recalc();
+  }
+
+  function expand(btn) {
+    const task = btn.closest('.task');
+    const detail = task.querySelector('.task-detail');
+    const isOpen = detail.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    btn.textContent = isOpen ? '▲' : '▼';
+  }
+
+  // Restore state on load
+  window.addEventListener('DOMContentLoaded', () => {
+    const state = loadState();
+    document.querySelectorAll('.task').forEach(task => {
+      const id = task.querySelector('.task-num').textContent;
+      if(state[id]) {
+        task.classList.add('done');
+        task.querySelector('.task-check').classList.add('checked');
+      }
+    });
+    recalc();
+  });
+</script>
+
+</body>
+</html>
